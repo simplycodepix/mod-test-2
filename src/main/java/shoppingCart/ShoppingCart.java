@@ -96,28 +96,15 @@ public class ShoppingCart {
             lineLength += w;
         StringBuilder sb = new StringBuilder();
         // header
-        for (int i = 0; i < header.length; i++)
-            appendFormatted(sb, header[i], align[i], width[i]);
-        sb.append("\n");
-        // separator
-        for (int i = 0; i < lineLength; i++)
-            sb.append("-");
-        sb.append("\n");
+        appendFormattedLine(sb, header, align, width, true);
+        appendSeparator(sb, lineLength);
         // lines
         for (String[] line : lines) {
-            for (int i = 0; i < line.length; i++)
-                appendFormatted(sb, line[i], align[i], width[i]);
-            sb.append("\n");
+            appendFormattedLine(sb, line, align, width, true);
         }
-        if (lines.size() > 0) {
-            // separator
-            for (int i = 0; i < lineLength; i++)
-                sb.append("-");
-            sb.append("\n");
-        }
+        if (lines.size() > 0) appendSeparator(sb, lineLength);
         // footer
-        for (int i = 0; i < footer.length; i++)
-            appendFormatted(sb, footer[i], align[i], width[i]);
+        appendFormattedLine(sb, footer, align, width, false);
         return sb.toString();
     }
     // --- private section -----------------------------------------------------
@@ -126,6 +113,18 @@ public class ShoppingCart {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
         MONEY = new DecimalFormat("$#.00", symbols);
+    }
+
+    private static void appendSeparator(StringBuilder sb, int lineLength){
+        for(int i = 0; i < lineLength; i++)
+            sb.append("-");
+        sb.append("\n");
+    }
+
+    private static void appendFormattedLine(StringBuilder sb, String[] line, int[] align, int[] width, Boolean newLine) {
+        for(int i = 0; i < line.length; i++)
+            appendFormatted(sb, line[i], align[i], width[i]);
+        if(newLine) sb.append("\n");
     }
 
     private static void adjustColumnWidth(int[] width, String[] columns){
