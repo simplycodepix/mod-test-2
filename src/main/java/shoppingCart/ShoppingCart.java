@@ -120,6 +120,14 @@ public class ShoppingCart {
         return lines;
     }
 
+    private int[] getTicketTableWidth(String[] header, String[] footer, List<String[]> lines) {
+        int[] width = new int[]{0, 0, 0, 0, 0, 0};
+        for (String[] line : lines) adjustColumnWidth(width, line);
+        adjustColumnWidth(width, header);
+        adjustColumnWidth(width, footer);
+        return width;
+    }
+
     private String getFormattedTicketTable(double total) {
         if (items.size() == 0) return "No items.";
 
@@ -129,10 +137,7 @@ public class ShoppingCart {
 
         // formatting table
         int[] align = new int[]{1, -1, 1, 1, 1, 1};
-        int[] width = new int[]{0, 0, 0, 0, 0, 0};
-        for (String[] line : lines) adjustColumnWidth(width, line);
-        adjustColumnWidth(width, header);
-        adjustColumnWidth(width, footer);
+        int[] width = getTicketTableWidth(header, footer, lines);
 
         // line length
         int lineLength = width.length - 1;
