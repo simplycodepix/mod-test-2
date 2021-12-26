@@ -6,7 +6,7 @@ import java.text.*;
  * Containing items and calculating price.
  */
 public class ShoppingCart {
-    public static enum ItemType { NEW, REGULAR, SECOND_FREE, SALE };
+    public enum ItemType { NEW, REGULAR, SECOND_FREE, SALE }
     /**
      * Tests all class methods.
      */
@@ -63,7 +63,7 @@ public class ShoppingCart {
     public String formatTicket(){
         if (items.size() == 0)
             return "No items.";
-        List<String[]> lines = new ArrayList<String[]>();
+        List<String[]> lines = new ArrayList<>();
         String[] header = {"#","Item","Price","Quan.","Discount","Total"};
         int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
         // formatting each line
@@ -78,7 +78,7 @@ public class ShoppingCart {
                     item.getTitle(),
                     MONEY.format(item.getPrice()),
                     String.valueOf(item.getQuantity()),
-                    (item.getDiscount() == 0) ? "-" : (String.valueOf(item.getDiscount()) + "%"),
+                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
                     MONEY.format(item.getTotalPrice())
             });
             total += item.getTotalPrice();
@@ -103,7 +103,7 @@ public class ShoppingCart {
         for (String[] line : lines) {
             appendFormattedLine(sb, line, align, width, true);
         }
-        if (lines.size() > 0) appendSeparator(sb, lineLength);
+        appendSeparator(sb, lineLength);
         // footer
         appendFormattedLine(sb, footer, align, width, false);
         return sb.toString();
@@ -130,7 +130,7 @@ public class ShoppingCart {
 
     private static void adjustColumnWidth(int[] width, String[] columns){
         for(int i = 0; i < width.length; i++)
-            width[i] = (int) Math.max(width[i], columns[i].length());
+            width[i] = Math.max(width[i], columns[i].length());
     }
 
     /**
@@ -165,9 +165,6 @@ public class ShoppingCart {
         switch (type) {
             case NEW:
                 return 0;
-            case REGULAR:
-                discount = 0;
-                break;
             case SECOND_FREE:
                 if (quantity > 1)
                     discount = 50;
@@ -176,11 +173,11 @@ public class ShoppingCart {
                 discount = 70;
                 break;
         }
-        if (discount < 80) {
-            discount += quantity / 10;
-            if (discount > 80)
-                discount = 80;
-        }
+
+        discount += quantity / 10;
+        if (discount > 80)
+            discount = 80;
+
         return discount;
     }
     /** item info */
@@ -230,5 +227,5 @@ public class ShoppingCart {
         }
     }
     /** Container for added items */
-    private List<Item> items = new ArrayList<Item>();
+    private List<Item> items = new ArrayList<>();
 }
