@@ -17,7 +17,15 @@ class ShoppingCartTest {
     }
 
     @Test
+    void mainCheck() {
+        System.out.println("* UtilsJUnit5Test: test method – main()");
+        ShoppingCart.main(new String[]{"args"});
+    }
+
+    @Test
     void formatTicketCheck() {
+        System.out.println("* UtilsJUnit5Test: test method – formatTicket()");
+
         ShoppingCart cart = new ShoppingCart();
         cart.addItem("Apple", 0.99, 5, ShoppingCart.ItemType.NEW);
         cart.addItem("Banana", 20.00, 4, ShoppingCart.ItemType.SECOND_FREE);
@@ -38,6 +46,8 @@ class ShoppingCartTest {
 
     @Test
     void appendFormattedCheck() {
+        System.out.println("* UtilsJUnit5Test: test method – appendFormatted()");
+
         StringBuilder sb = new StringBuilder();
         ShoppingCart.appendFormatted(sb, "Append Formatted Check", 0, 14);
         assertEquals(sb.toString(), "Append Formatt ");
@@ -61,6 +71,8 @@ class ShoppingCartTest {
 
     @Test
     void calculateDiscountCheck() {
+        System.out.println("* UtilsJUnit5Test: test method – calculateDiscount()");
+
         assertEquals(0, ShoppingCart.calculateDiscount(ShoppingCart.ItemType.NEW, 15));
         assertEquals(0, ShoppingCart.calculateDiscount(ShoppingCart.ItemType.NEW, 1));
         assertEquals(1, ShoppingCart.calculateDiscount(ShoppingCart.ItemType.REGULAR, 15));
