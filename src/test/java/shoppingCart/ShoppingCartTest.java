@@ -65,8 +65,10 @@ class ShoppingCartTest {
         assertEquals(sb.toString(), "Append Formatte ");
 
         sb = new StringBuilder();
-        ShoppingCart.appendFormatted(sb, "Append Formatted Check", -1, 15);
-        assertEquals(sb.toString(), "Append Formatte ");
+        ShoppingCart.appendFormatted(sb, "left", -1, 15);
+        ShoppingCart.appendFormatted(sb, "right", 1, 15);
+        ShoppingCart.appendFormatted(sb, "center", 0, 15);
+        assertEquals(sb.toString(), "left                      right     center      ");
     }
 
     @Test
