@@ -61,53 +61,10 @@ public class ShoppingCart {
      * if no items in cart returns "No items." string.
      */
     public String formatTicket(){
-        if (items.size() == 0)
-            return "No items.";
-        List<String[]> lines = new ArrayList<>();
-        String[] header = {"#","Item","Price","Quan.","Discount","Total"};
-        int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
-        // formatting each line
-        double total = 0.00;
-        int index = 0;
-        for (Item item : items) {
-            item.setDiscount(calculateDiscount(item.getItemType(), item.getQuantity()));
-            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount()) / 100.00);
-
-            lines.add(new String[]{
-                    String.valueOf(++index),
-                    item.getTitle(),
-                    MONEY.format(item.getPrice()),
-                    String.valueOf(item.getQuantity()),
-                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
-                    MONEY.format(item.getTotalPrice())
-            });
-            total += item.getTotalPrice();
-        }
-        String[] footer = { String.valueOf(index),"","","","", MONEY.format(total) };
-        // formatting table
-        // column max length
-        int[] width = new int[]{0,0,0,0,0,0};
-        for (String[] line : lines)
-            adjustColumnWidth(width, line);
-        adjustColumnWidth(width, header);
-        adjustColumnWidth(width, footer);
-        // line length
-        int lineLength = width.length - 1;
-        for (int w : width)
-            lineLength += w;
-        StringBuilder sb = new StringBuilder();
-        // header
-        appendFormattedLine(sb, header, align, width, true);
-        appendSeparator(sb, lineLength);
-        // lines
-        for (String[] line : lines) {
-            appendFormattedLine(sb, line, align, width, true);
-        }
-        appendSeparator(sb, lineLength);
-        // footer
-        appendFormattedLine(sb, footer, align, width, false);
-        return sb.toString();
+        double total = calculateItemParameters(items);
+        return getFormattedTicketTable(total);
     }
+    
     // --- private section -----------------------------------------------------
     private static final NumberFormat MONEY;
     static {
@@ -131,6 +88,66 @@ public class ShoppingCart {
     private static void adjustColumnWidth(int[] width, String[] columns){
         for(int i = 0; i < width.length; i++)
             width[i] = Math.max(width[i], columns[i].length());
+    }
+
+    private static double calculateItemParameters(List<Item> items) {
+        double total = 0.00;
+        for (Item item : items) {
+            item.setDiscount(calculateDiscount(item.getItemType(), item.getQuantity()));
+            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount()) / 100.00);
+            total += item.getTotalPrice();
+        }
+        return total;
+    }
+
+    private List<String[]> convertItemsToTableLines() {
+        List<String[]> lines = new ArrayList<>();
+        int index = 0;
+        for (Item item : items) {
+            lines.add(new String[]{
+                    String.valueOf(++index),
+                    item.getTitle(),
+                    MONEY.format(item.getPrice()),
+                    String.valueOf(item.getQuantity()),
+                    (item.getDiscount() == 0) ? "-" : (item.getDiscount() + "%"),
+                    MONEY.format(item.getTotalPrice())
+            });
+        }
+        return lines;
+    }
+
+    private String getFormattedTicketTable(double total) {
+        if (items.size() == 0) return "No items.";
+
+
+        String[] header = {"#","Item","Price","Quan.","Discount","Total"};
+        int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
+        List<String[]> lines = convertItemsToTableLines();
+        String[] footer = { String.valueOf(lines.size()),"","","","", MONEY.format(total) };
+
+        // formatting table
+        // column max length
+        int[] width = new int[]{0,0,0,0,0,0};
+        for (String[] line : lines) adjustColumnWidth(width, line);
+        adjustColumnWidth(width, header);
+        adjustColumnWidth(width, footer);
+
+        // line length
+        int lineLength = width.length - 1;
+        for (int w : width) lineLength += w;
+
+        StringBuilder sb = new StringBuilder();
+        // header
+        appendFormattedLine(sb, header, align, width, true);
+        appendSeparator(sb, lineLength);
+
+        // lines
+        for (String[] line : lines) appendFormattedLine(sb, line, align, width, true);
+        appendSeparator(sb, lineLength);
+
+        // footer
+        appendFormattedLine(sb, footer, align, width, false);
+        return sb.toString();
     }
 
     /**
